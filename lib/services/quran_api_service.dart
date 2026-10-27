@@ -1,0 +1,163 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import '../models/surah_model.dart';
+import '../models/surah_detail_model.dart';
+import '../models/tafsir_model.dart';
+import '../models/doa_model.dart';
+
+class QuranApiService {
+  static const String baseUrl = 'https://equran.id/api/v2';
+  static const String doaUrl = 'https://equran.id/api/doa';
+
+  // Fetch all 114 surahs
+  Future<List<SurahModel>> getAllSurah() async {
+    try {
+      final response = await http.get(Uri.parse('$baseUrl/surat')).timeout(
+            const Duration(seconds: 15),
+          );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> body = jsonDecode(response.body);
+        final List<dynamic> data = body['data'] ?? [];
+        return data.map((json) => SurahModel.fromJson(json)).toList();
+      } else {
+        throw Exception('Gagal memuat data surah (${response.statusCode})');
+      }
+    } catch (e) {
+      throw Exception('Terjadi kesalahan koneksi: $e');
+    }
+  }
+
+  // Fetch detail of a surah (all ayat with Arabic, Latin, and Indonesian translation)
+  Future<SurahDetailModel> getSurahDetail(int nomor) async {
+    try {
+      final response = await http.get(Uri.parse('$baseUrl/surat/$nomor')).timeout(
+            const Duration(seconds: 20),
+          );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> body = jsonDecode(response.body);
+        final dynamic data = body['data'];
+        if (data != null) {
+          return SurahDetailModel.fromJson(data);
+        } else {
+          throw Exception('Data surat tidak ditemukan');
+        }
+      } else {
+        throw Exception('Gagal memuat detail surat ($nomor)');
+      }
+    } catch (e) {
+      throw Exception('Gagal mengambil ayat: $e');
+    }
+  }
+
+  // Fetch Tafsir of a surah
+  Future<SurahTafsirModel> getSurahTafsir(int nomor) async {
+    try {
+      final response = await http.get(Uri.parse('$baseUrl/tafsir/$nomor')).timeout(
+            const Duration(seconds: 20),
+          );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> body = jsonDecode(response.body);
+        final dynamic data = body['data'];
+        return SurahTafsirModel.fromJson(data);
+      } else {
+        throw Exception('Gagal memuat tafsir surat ($nomor)');
+      }
+    } catch (e) {
+      throw Exception('Gagal mengambil tafsir: $e');
+    }
+  }
+
+  // Fetch Daily Doa
+  Future<List<DoaModel>> getDailyDoa() async {
+    try {
+      final response = await http.get(Uri.parse(doaUrl)).timeout(
+            const Duration(seconds: 15),
+          );
+
+      if (response.statusCode == 200) {
+        final dynamic decoded = jsonDecode(response.body);
+        List<dynamic> list = [];
+        if (decoded is List) {
+          list = decoded;
+        } else if (decoded is Map && decoded['data'] is List) {
+          list = decoded['data'];
+        }
+        return list.map((item) => DoaModel.fromJson(item)).toList();
+      } else {
+        return fallbackDoa;
+      }
+    } catch (e) {
+      return fallbackDoa;
+    }
+  }
+
+  // Essential offline fallback prayers
+  static final List<DoaModel> fallbackDoa = [
+    DoaModel(
+      id: '1',
+      doa: 'Doa Sebelum Makan',
+      ayat: 'اللَّهُمَّ بَارِكْ لَنَا فِيمَا رَزَقْتَنَا وَقِنَا عَذَابَ النَّارِ',
+      latin: 'Allahumma baarik lanaa fiimaa razaqtanaa wa qinaa \'adzaaban naar.',
+      artinya: 'Ya Allah, berkahilah kami dalam rezeki yang telah Engkau berikan kepada kami dan peliharalah kami dari siksa api neraka.',
+    ),
+    DoaModel(
+      id: '2',
+      doa: 'Doa Sesudah Makan',
+      ayat: 'الْحَمْدُ لِلَّهِ الَّذِي أَطْعَمَنَا وَسَقَانَا وَجَعَلَنَا مُسْلِمِينَ',
+      latin: 'Alhamdu lillaahil-ladzii ath\'amanaa wa saqaanaa wa ja\'alanaa muslimiin.',
+      artinya: 'Segala puji bagi Allah yang telah memberi makan kami dan memberi minum kami, dan menjadikan kami orang-orang muslim.',
+    ),
+    DoaModel(
+      id: '3',
+      doa: 'Doa Sebelum Tidur',
+      ayat: 'بِاسْمِكَ اللَّهُمَّ أَحْيَا وَأَمُوتُ',
+      latin: 'Bismikallaahumma ahyaa wa amuutu.',
+      artinya: 'Dengan nama-Mu ya Allah, aku hidup dan aku mati.',
+    ),
+    DoaModel(
+      id: '4',
+      doa: 'Doa Bangun Tidur',
+      ayat: 'الْحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا بَعْدَ مَا أَمَاتَنَا وَإِلَيْهِ النُّشُورُ',
+      latin: 'Alhamdu lillaahil-ladzii ahyaanaa ba\'da maa amaatanaa wa ilaihin-nusyuur.',
+      artinya: 'Segala puji bagi Allah yang telah menghidupkan kami setelah mematikan kami, dan kepada-Nya kami kembali.',
+    ),
+    DoaModel(
+      id: '5',
+      doa: 'Doa Masuk Masjid',
+      ayat: 'اللَّهُمَّ افْتَحْ لِي أَبْوَابَ رَحْمَتِكَ',
+      latin: 'Allahummaf-tah lii abwaaba rahmatik.',
+      artinya: 'Ya Allah, bukakanlah untukku pintu-pintu rahmat-Mu.',
+    ),
+    DoaModel(
+      id: '6',
+      doa: 'Doa Keluar Masjid',
+      ayat: 'اللَّهُمَّ إِنِّي أَسْأَلُكَ مِنْ فَضْلِكَ',
+      latin: 'Allahumma innii as-aluka min fadhlik.',
+      artinya: 'Ya Allah, sesungguhnya aku memohon keutamaan dari-Mu.',
+    ),
+    DoaModel(
+      id: '7',
+      doa: 'Doa untuk Kedua Orang Tua',
+      ayat: 'رَبِّ اغْفِرْ لِي وَلِوَالِدَيَّ وَارْحَمْهُمَا كَمَا رَبَّيَانِي صَغِيرًا',
+      latin: 'Rabbighfir lii wa liwaalidayya warhamhumaa kamaa rabbayaanii shaghiiraa.',
+      artinya: 'Wahai Tuhanku, ampunilah aku dan kedua orang tuaku, dan sayangilah mereka berdua sebagaimana mereka telah menyayangiku di waktu kecil.',
+    ),
+    DoaModel(
+      id: '8',
+      doa: 'Doa Sapu Jagad (Kebaikan Dunia & Akhirat)',
+      ayat: 'رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ',
+      latin: 'Rabbanaa aatinaa fid-dunyaa hasanatan wa fil-aakhirati hasanatan wa qinaa \'adzaaban-naar.',
+      artinya: 'Ya Tuhan kami, berilah kami kebaikan di dunia dan kebaikan di akhirat, dan lindungilah kami dari siksa neraka.',
+    ),
+    DoaModel(
+      id: '9',
+      doa: 'Doa Keluar Rumah',
+      ayat: 'بِسْمِ اللَّهِ تَوَكَّلْتُ عَلَى اللَّهِ لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ',
+      latin: 'Bismillaahi tawakkaltu \'alallaahi laa hawla wa laa quwwata illaa billaah.',
+      artinya: 'Dengan nama Allah, aku bertawakal kepada Allah, tiada daya dan kekuatan kecuali dengan pertolongan Allah.',
+    ),
+  ];
+}
