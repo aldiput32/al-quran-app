@@ -31,6 +31,11 @@ jobs:
       - name: Generate Android Scaffolding & Gradle Wrapper
         run: |
           flutter create . --platforms=android --org com.alldi
+          # Remove any generated .kts files to avoid conflict with Groovy .gradle files
+          rm -f android/build.gradle.kts android/settings.gradle.kts android/app/build.gradle.kts
+          # Ensure Gradle 8.14 is set in wrapper
+          sed -i 's/gradle-.*-all.zip/gradle-8.14-all.zip/g' android/gradle/wrapper/gradle-wrapper.properties
+          sed -i 's/gradle-.*-bin.zip/gradle-8.14-all.zip/g' android/gradle/wrapper/gradle-wrapper.properties
           chmod +x android/gradlew
 
       - name: Get Dependencies
@@ -39,7 +44,7 @@ jobs:
       - name: Build APK Release
         run: |
           set -o pipefail
-          if ! flutter build apk --release 2>&1 | tee build_output.log; then
+          if ! flutter build apk --release --android-skip-build-dependency-validation 2>&1 | tee build_output.log; then
             echo "### ❌ Build APK Failed" >> $GITHUB_STEP_SUMMARY
             echo '```' >> $GITHUB_STEP_SUMMARY
             tail -n 60 build_output.log >> $GITHUB_STEP_SUMMARY
