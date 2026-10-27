@@ -24,7 +24,7 @@ if (flutterVersionName == null) {
 
 android {
     namespace "com.alldi.alquran_app"
-    compileSdk 34
+    compileSdk 36
     ndkVersion flutter.ndkVersion
 
     compileOptions {
@@ -40,7 +40,7 @@ android {
     defaultConfig {
         applicationId "com.alldi.alquran_app"
         minSdkVersion 24
-        targetSdkVersion 34
+        targetSdkVersion 36
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         multiDexEnabled true

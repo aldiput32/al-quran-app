@@ -306,6 +306,7 @@ class _QiblaScreenState extends State<QiblaScreen> {
                   fontSize: 12,
                   color: Colors.grey,
                 ),
+              ),
               const SizedBox(height: 16),
               OutlinedButton.icon(
                 style: OutlinedButton.styleFrom(
