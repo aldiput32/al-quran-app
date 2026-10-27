@@ -37,24 +37,7 @@ jobs:
         run: flutter pub get
 
       - name: Build APK Release
-        run: |
-          set -o pipefail
-          flutter build apk --release -v 2>&1 | tee build_log.txt
-        shell: bash
-
-      - name: Print Failure Log
-        if: failure()
-        run: |
-          echo "=== TAIL OF BUILD LOG ==="
-          tail -n 120 build_log.txt
-        shell: bash
-
-      - name: Upload Build Log on Failure
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-failure-log
-          path: build_log.txt
+        run: flutter build apk --release
 
       - name: Upload APK Artifact
         if: success()
