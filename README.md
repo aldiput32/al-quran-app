@@ -87,3 +87,4 @@ alquran/
    flutter build apk --release
    ```
    File APK siap install berada di: `build/app/outputs/flutter-apk/app-release.apk`
+"# al-quran-app" 
