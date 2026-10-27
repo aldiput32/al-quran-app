@@ -5,7 +5,7 @@ on:
     branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
-  workflow_dispatch: # Memungkinkan tombol "Run workflow" secara manual dari GitHub
+  workflow_dispatch:
 
 jobs:
   build:
@@ -27,6 +27,11 @@ jobs:
         with:
           channel: 'stable'
           cache: true
+
+      - name: Generate Android Scaffolding & Gradle Wrapper
+        run: |
+          flutter create . --platforms=android --org com.alldi
+          chmod +x android/gradlew
 
       - name: Get Dependencies
         run: flutter pub get
