@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:adhan/adhan.dart';
+import 'package:adhan_dart/adhan_dart.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -127,7 +127,7 @@ class PrayerProvider extends ChangeNotifier {
         name = 'Isya';
         nextTime = _todayPrayerTimes!.isha;
         break;
-      case Prayer.none:
+      default:
         // Next prayer is tomorrow's Fajr
         name = 'Subuh (Besok)';
         final tomorrow = now.add(const Duration(days: 1));

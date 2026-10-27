@@ -1,4 +1,4 @@
-import 'package:adhan/adhan.dart';
+import 'package:adhan_dart/adhan_dart.dart';
 import '../models/prayer_setting_model.dart';
 
 class PrayerService {
@@ -49,19 +49,22 @@ class PrayerService {
   // Calculate prayer times using Kemenag RI standard (Fajr 20°, Isha 18°)
   PrayerTimes calculatePrayerTimes(CityLocation city, {DateTime? date}) {
     final coordinates = Coordinates(city.latitude, city.longitude);
-    final dateComponents = DateComponents.from(date ?? DateTime.now());
-
-    final params = CalculationMethod.singapore.getParameters();
+    final params = CalculationMethodParameters.singapore();
     params.fajrAngle = 20.0; // Standar Kemenag RI
     params.ishaAngle = 18.0; // Standar Kemenag RI
     params.madhab = Madhab.shafi;
 
-    return PrayerTimes(coordinates, dateComponents, params);
+    return PrayerTimes(
+      coordinates: coordinates,
+      date: date ?? DateTime.now(),
+      calculationParameters: params,
+      precision: true,
+    );
   }
 
   // Calculate Qibla direction from city coordinates
   double calculateQiblaDirection(double latitude, double longitude) {
     final coordinates = Coordinates(latitude, longitude);
-    return Qibla(coordinates).direction;
+    return Qibla.qibla(coordinates);
   }
 }
