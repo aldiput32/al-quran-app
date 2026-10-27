@@ -21,20 +21,24 @@ class PrayerService {
   // Adzan audio sample streams (merdu audio)
   static const Map<String, Map<String, String>> adzanAudios = {
     'makkah': {
-      'title': 'Adzan Makkah (Merdu & Syahdu)',
-      'url': 'https://download.quranicaudio.com/athan/makkah.mp3',
+      'title': 'Adzan Makkah (Masjid Al-Haram)',
+      'url': 'https://archive.org/download/KoleksiAdzan/Adzan-Masjid-Al-Harom-Makkah.MP3',
     },
     'madinah': {
       'title': 'Adzan Madinah (Masjid Nabawi)',
-      'url': 'https://download.quranicaudio.com/athan/madinah.mp3',
+      'url': 'https://archive.org/download/KoleksiAdzan/Adzan-Masjid-Nabawiy-Madinah.MP3',
     },
-    'subuh': {
-      'title': 'Adzan Subuh (As-Shalatu Khairum Minan Naum)',
-      'url': 'https://download.quranicaudio.com/athan/fajr_makkah.mp3',
+    'alaqsa': {
+      'title': 'Adzan Masjid Al-Aqsa (Palestina)',
+      'url': 'https://archive.org/download/KoleksiAdzan/Adzan-Masjid-Al-Alaqsa-Palestina.MP3',
     },
     'egypt': {
-      'title': 'Adzan Mesir (Syekh Abdul Basith)',
-      'url': 'https://download.quranicaudio.com/athan/abdulbasit.mp3',
+      'title': 'Adzan Khas Mesir',
+      'url': 'https://archive.org/download/KoleksiAdzan/Adzan-Masjid-Mesir1.mp3',
+    },
+    'thaha': {
+      'title': 'Adzan Merdu (Muhammad Thaha)',
+      'url': 'https://archive.org/download/KoleksiAdzan/Adzan-Anak-Muhammad-Thaha.MP3',
     },
     'beep': {
       'title': 'Nada Notifikasi Lembut',
