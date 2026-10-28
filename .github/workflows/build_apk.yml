@@ -42,24 +42,23 @@ jobs:
       - name: Get Dependencies
         run: flutter pub get
 
-      - name: Build APK Release
+      - name: Build APK & AppBundle Release
         run: |
           set -o pipefail
-          if ! flutter build apk --release --android-skip-build-dependency-validation 2>&1 | tee build_output.log; then
-            echo "### ❌ Build APK Failed" >> $GITHUB_STEP_SUMMARY
-            echo '```' >> $GITHUB_STEP_SUMMARY
-            tail -n 60 build_output.log >> $GITHUB_STEP_SUMMARY
-            echo '```' >> $GITHUB_STEP_SUMMARY
-            exit 1
-          fi
+          echo "Building APK..."
+          flutter build apk --release --android-skip-build-dependency-validation
+          echo "Building AppBundle (.aab) for Google Play Store..."
+          flutter build appbundle --release --android-skip-build-dependency-validation
         shell: bash
 
-      - name: Upload APK Artifact
+      - name: Upload APK & AAB Artifacts
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: AlQuran-Indonesia-Release-APK
-          path: build/app/outputs/flutter-apk/app-release.apk
+          name: AlQuran-Indonesia-Release-Files
+          path: |
+            build/app/outputs/flutter-apk/app-release.apk
+            build/app/outputs/bundle/release/app-release.aab
           retention-days: 14
 
       - name: Create GitHub Release
@@ -67,12 +66,17 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: release-v1.0.${{ github.run_number }}
-          name: Al-Qur'an Indonesia APK v1.0.${{ github.run_number }}
+          name: Al-Qur'an Indonesia Release v1.0.${{ github.run_number }}
           body: |
-            ### 📱 Download APK Al-Qur'an Indonesia Terbaru
-            - ✅ Donasi aktif: GoPay & ShopeePay a.n Ahmad Aldi Putera (085691430408)
-            - ✅ Kompas Kiblat: Perhitungan akurat + Pemilih Kota langsung di layar kiblat
-            - ✅ Al-Qur'an 114 Surah, Tajwid Berwarna, Tafsir Kemenag RI, dan Audio Murottal
-          files: build/app/outputs/flutter-apk/app-release.apk
+            ### 📱 Download Rilis Al-Qur'an Indonesia Terbaru
+            - **`app-release.apk`**: File instalasi langsung untuk HP Android Anda
+            - **`app-release.aab`**: File bundle resmi untuk diunggah ke Google Play Store
+            - ✅ Target SDK stabil Android 14 (API 34)
+            - ✅ Ditandatangani dengan Official Keystore (Anti "Paket Tidak Valid")
+            - ✅ Donasi: GoPay & ShopeePay a.n Ahmad Aldi Putera (085691430408)
+            - ✅ Kompas Kiblat: Sinkronisasi akurat + Pemilih Kota langsung di layar kiblat
+          files: |
+            build/app/outputs/flutter-apk/app-release.apk
+            build/app/outputs/bundle/release/app-release.aab
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
