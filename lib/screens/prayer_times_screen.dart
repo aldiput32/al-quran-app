@@ -43,7 +43,7 @@ class PrayerTimesScreen extends StatelessWidget {
         ],
       ),
       body: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 90),
         children: [
           // City & Date Header
           Row(

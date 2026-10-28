@@ -123,4 +123,17 @@ class StorageService {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString(_keyCachedSurahs);
   }
+
+  // --- CACHED DOA ---
+  static const String _keyCachedDoa = 'cached_doa_json';
+
+  Future<void> saveCachedDoa(String jsonString) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_keyCachedDoa, jsonString);
+  }
+
+  Future<String?> getCachedDoa() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_keyCachedDoa);
+  }
 }

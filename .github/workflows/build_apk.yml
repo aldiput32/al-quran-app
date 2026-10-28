@@ -11,6 +11,7 @@ jobs:
   build:
     name: Build Flutter APK
     runs-on: ubuntu-latest
+    permissions: write-all
 
     steps:
       - name: Checkout Repository
@@ -60,3 +61,18 @@ jobs:
           name: AlQuran-Indonesia-Release-APK
           path: build/app/outputs/flutter-apk/app-release.apk
           retention-days: 14
+
+      - name: Create GitHub Release
+        if: success() && github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: release-v1.0.${{ github.run_number }}
+          name: Al-Qur'an Indonesia APK v1.0.${{ github.run_number }}
+          body: |
+            ### 📱 Download APK Al-Qur'an Indonesia Terbaru
+            - ✅ Donasi aktif: GoPay & ShopeePay a.n Ahmad Aldi Putera (085691430408)
+            - ✅ Kompas Kiblat: Perhitungan akurat + Pemilih Kota langsung di layar kiblat
+            - ✅ Al-Qur'an 114 Surah, Tajwid Berwarna, Tafsir Kemenag RI, dan Audio Murottal
+          files: build/app/outputs/flutter-apk/app-release.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -235,157 +235,165 @@ class _SurahDetailScreenState extends State<SurahDetailScreen> {
               ),
             )
           else if (quranProv.currentSurahDetail != null)
-            ListView(
-              controller: _scrollController,
-              padding: const EdgeInsets.only(bottom: 90),
-              children: [
-                // Header Banner Card
-                Container(
-                  margin:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  padding: const EdgeInsets.all(22),
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF0F766E), Color(0xFF047857)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.primary.withOpacity(0.3),
-                        blurRadius: 15,
-                        offset: const Offset(0, 6),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    children: [
-                      Text(
-                        widget.surah.namaLatin,
-                        style: GoogleFonts.plusJakartaSans(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        '(${widget.surah.arti})',
-                        style: GoogleFonts.plusJakartaSans(
-                          fontSize: 14,
-                          color: Colors.white70,
-                        ),
-                      ),
-                      const Divider(
-                        color: Colors.white24,
-                        height: 24,
-                        thickness: 1,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            widget.surah.tempatTurun.toUpperCase(),
-                            style: GoogleFonts.plusJakartaSans(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.accentGoldLight,
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          const Icon(Icons.circle,
-                              size: 4, color: Colors.white54),
-                          const SizedBox(width: 8),
-                          Text(
-                            '${widget.surah.jumlahAyat} AYAT',
-                            style: GoogleFonts.plusJakartaSans(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white70,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-                      // Play Full Surah Button
-                      ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          foregroundColor: AppColors.primaryDark,
-                          elevation: 0,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 18, vertical: 10),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        icon: Icon(
-                          isFullSurahPlaying
-                              ? Icons.pause_rounded
-                              : Icons.play_arrow_rounded,
-                        ),
-                        label: Text(
-                          isFullSurahPlaying
-                              ? 'Jeda Murottal Surat'
-                              : 'Putar Murottal Penuh',
-                          style: GoogleFonts.plusJakartaSans(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 13,
-                          ),
-                        ),
-                        onPressed: () {
-                          final fullUrl =
-                              quranProv.currentSurahDetail!.fullAudioUrl;
-                          if (fullUrl.isNotEmpty) {
-                            audioProv.playFullSurah(
-                              surahNomor: widget.surah.nomor,
-                              audioUrl: fullUrl,
-                            );
-                          }
-                        },
-                      ),
-                    ],
-                  ),
-                ),
+            Builder(
+              builder: (context) {
+                final detail = quranProv.currentSurahDetail!;
+                final showBismillah = widget.surah.nomor != 9 && widget.surah.nomor != 1;
+                final headerCount = showBismillah ? 2 : 1;
+                final totalItems = headerCount + detail.ayat.length;
 
-                // Bismillah Banner (Except Surah #9 At-Taubah and Surah #1 Al-Fatihah where it's ayah 1)
-                if (widget.surah.nomor != 9 && widget.surah.nomor != 1)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    child: Center(
-                      child: Text(
-                        'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ',
-                        style: GoogleFonts.amiri(
-                          fontSize: 26,
-                          fontWeight: FontWeight.bold,
-                          color: isDark
-                              ? AppColors.textPrimaryDark
-                              : AppColors.primaryDark,
+                return ListView.builder(
+                  controller: _scrollController,
+                  padding: const EdgeInsets.only(bottom: 100),
+                  itemCount: totalItems,
+                  itemBuilder: (context, index) {
+                    if (index == 0) {
+                      return Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        padding: const EdgeInsets.all(22),
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [Color(0xFF0F766E), Color(0xFF047857)],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.primary.withOpacity(0.3),
+                              blurRadius: 15,
+                              offset: const Offset(0, 6),
+                            ),
+                          ],
                         ),
-                      ),
-                    ),
-                  ),
+                        child: Column(
+                          children: [
+                            Text(
+                              widget.surah.namaLatin,
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              '(${widget.surah.arti})',
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 14,
+                                color: Colors.white70,
+                              ),
+                            ),
+                            const Divider(
+                              color: Colors.white24,
+                              height: 24,
+                              thickness: 1,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  widget.surah.tempatTurun.toUpperCase(),
+                                  style: GoogleFonts.plusJakartaSans(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.accentGoldLight,
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                const Icon(Icons.circle, size: 4, color: Colors.white54),
+                                const SizedBox(width: 8),
+                                Text(
+                                  '${widget.surah.jumlahAyat} AYAT',
+                                  style: GoogleFonts.plusJakartaSans(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white70,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 16),
+                            // Play Full Surah Button
+                            ElevatedButton.icon(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                foregroundColor: AppColors.primaryDark,
+                                elevation: 0,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 18, vertical: 10),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              icon: Icon(
+                                isFullSurahPlaying
+                                    ? Icons.pause_rounded
+                                    : Icons.play_arrow_rounded,
+                              ),
+                              label: Text(
+                                isFullSurahPlaying
+                                    ? 'Jeda Murottal Surat'
+                                    : 'Putar Murottal Penuh',
+                                style: GoogleFonts.plusJakartaSans(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 13,
+                                ),
+                              ),
+                              onPressed: () {
+                                final fullUrl = detail.fullAudioUrl;
+                                if (fullUrl.isNotEmpty) {
+                                  audioProv.playFullSurah(
+                                    surahNomor: widget.surah.nomor,
+                                    audioUrl: fullUrl,
+                                  );
+                                }
+                              },
+                            ),
+                          ],
+                        ),
+                      );
+                    }
 
-                // Ayah List
-                ...quranProv.currentSurahDetail!.ayat.map((ayah) {
-                  return AyahCard(
-                    ayah: ayah,
-                    surah: widget.surah,
-                    onOpenTafsir: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => TafsirScreen(
-                            surah: widget.surah,
-                            highlightAyat: ayah.nomorAyat,
+                    if (showBismillah && index == 1) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        child: Center(
+                          child: Text(
+                            'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ',
+                            style: GoogleFonts.amiri(
+                              fontSize: 26,
+                              fontWeight: FontWeight.bold,
+                              color: isDark
+                                  ? AppColors.textPrimaryDark
+                                  : AppColors.primaryDark,
+                            ),
                           ),
                         ),
                       );
-                    },
-                  );
-                }),
-              ],
+                    }
+
+                    final ayahIndex = index - headerCount;
+                    final ayah = detail.ayat[ayahIndex];
+
+                    return AyahCard(
+                      ayah: ayah,
+                      surah: widget.surah,
+                      onOpenTafsir: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => TafsirScreen(
+                              surah: widget.surah,
+                              highlightAyat: ayah.nomorAyat,
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                );
+              },
             ),
 
           // Floating Audio Player at bottom

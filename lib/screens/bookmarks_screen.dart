@@ -54,7 +54,7 @@ class BookmarksScreen extends StatelessWidget {
                   ),
                 )
               : ListView(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 90),
                   children: [
                     // Last Read Card if exists
                     if (bookmarkProv.lastRead != null) ...[

@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../providers/audio_player_provider.dart';
 import '../providers/theme_provider.dart';
 import '../theme/app_colors.dart';
+import 'donasi_screen.dart';
 import 'prayer_times_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -20,7 +21,7 @@ class SettingsScreen extends StatelessWidget {
         title: const Text('Pengaturan'),
       ),
       body: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 90),
         children: [
           // Theme Section
           Text(
@@ -265,6 +266,64 @@ class SettingsScreen extends StatelessWidget {
                 if (val != null) {
                   audioProv.changeQari(val);
                 }
+              },
+            ),
+          ),
+
+          const SizedBox(height: 24),
+
+          // Donation & Server Support Section
+          Text(
+            'DONASI & DUKUNGAN OPERASIONAL',
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+              letterSpacing: 1.2,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Container(
+            decoration: BoxDecoration(
+              color: isDark ? AppColors.cardDark : AppColors.cardLight,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: isDark ? AppColors.borderDark : AppColors.borderLight,
+              ),
+            ),
+            child: ListTile(
+              leading: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: AppColors.accentGold.withOpacity(0.15),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.volunteer_activism_rounded,
+                  color: AppColors.accentGold,
+                  size: 20,
+                ),
+              ),
+              title: Text(
+                'Donasi Perpanjang Server',
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              subtitle: Text(
+                'Bantu operasional server cloud & streaming audio bebas iklan',
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 12,
+                  color: Colors.grey,
+                ),
+              ),
+              trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 16),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const DonasiScreen()),
+                );
               },
             ),
           ),

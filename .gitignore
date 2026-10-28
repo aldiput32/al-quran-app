@@ -41,3 +41,7 @@ migrate_working_dir/
 
 # Symbol processing
 .symbols/
+
+# Built binaries
+*.apk
+*.aab
